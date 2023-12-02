@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 AFlight::AFlight()
@@ -32,6 +33,7 @@ AFlight::AFlight()
 void AFlight::BeginPlay()
 {
 	Super::BeginPlay();
+	UGameplayStatics::GetPlayerController(Flight, 0)->SetMouseLocation(0.0f, 0.0f);
 	
 }
 
@@ -39,6 +41,8 @@ void AFlight::BeginPlay()
 void AFlight::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	UGameplayStatics::GetPlayerController(Flight, 0)->GetMousePosition(mouseX, mouseY);
+	UE_LOG(LogTemp, Warning, TEXT("Mouse Location: %f, %f"), mouseX, mouseY);
 
 }
 
