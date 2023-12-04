@@ -33,18 +33,44 @@ AFlight::AFlight()
 void AFlight::BeginPlay()
 {
 	Super::BeginPlay();
-	UGameplayStatics::GetPlayerController(Flight, 0)->SetMouseLocation(0.0f, 0.0f);
+
+	viewSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+	viewportSizeCenter = FVector2D(viewSize.X / 2, viewSize.Y / 2);
+	pitchSpeed = 0.5;
+	yawSpeed = 0.5;
+	UGameplayStatics::GetPlayerController(Flight, 0)->SetMouseLocation(int(viewSize.X/2), int(viewSize.Y/2));
+	UE_LOG(LogTemp, Warning, TEXT("Mouse Location: %f, %f"), viewSize.X / 2, viewSize.Y / 2);
+	
 	
 }
 
 // Called every frame
 void AFlight::Tick(float DeltaTime)
 {
+
 	Super::Tick(DeltaTime);
 	UGameplayStatics::GetPlayerController(Flight, 0)->GetMousePosition(mouseX, mouseY);
 	UE_LOG(LogTemp, Warning, TEXT("Mouse Location: %f, %f"), mouseX, mouseY);
 
+	mouseX = (viewSize.X / 2) - mouseX;
+	mouseY = (viewSize.Y / 2) - mouseY;
+
+	if (mouseX > 1) {
+		mouseX = 1;
+	}
+	if (mouseX < -1) {
+		mouseX = -1;
+	}
+	if (mouseY > 1) {
+		mouseY = 1;
+	}
+	if (mouseY < -1) {
+		mouseY = -1;
+	}
+	AFlight::Yaw(mouseY*yawSpeed);
+	AFlight::Pitch(mouseX*pitchSpeed);
 }
+
 
 void AFlight::Roll(float value)
 {
@@ -74,8 +100,8 @@ void AFlight::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAxis("Roll", this, &AFlight::Roll);
-	PlayerInputComponent->BindAxis("Pitch", this, &AFlight::Pitch);
-	PlayerInputComponent->BindAxis("Yaw", this, &AFlight::Yaw);
+	//PlayerInputComponent->BindAxis("Pitch", this, &AFlight::Pitch);
+	//PlayerInputComponent->BindAxis("Yaw", this, &AFlight::Yaw);
 }
 
 

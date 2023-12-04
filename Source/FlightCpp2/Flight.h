@@ -25,7 +25,10 @@ public:
 
 	float mouseX;
 	float mouseY;
-
+	float yawSpeed;
+	float pitchSpeed;
+	FVector2D viewSize;
+	FVector2D viewportSizeCenter;
 
 protected:
 	// Called when the game starts or when spawned
@@ -34,6 +37,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	
 
 	void Roll(float value);
 	void Yaw(float value);
