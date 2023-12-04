@@ -27,6 +27,8 @@ public:
 	float mouseY;
 	float yawSpeed;
 	float pitchSpeed;
+	float yaw;
+	float pitch;
 	FVector2D viewSize;
 	FVector2D viewportSizeCenter;
 

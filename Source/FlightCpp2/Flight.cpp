@@ -36,8 +36,8 @@ void AFlight::BeginPlay()
 
 	viewSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
 	viewportSizeCenter = FVector2D(viewSize.X / 2, viewSize.Y / 2);
-	pitchSpeed = 0.5;
-	yawSpeed = 0.5;
+	pitchSpeed = 0.01;
+	yawSpeed = 0.01;
 	UGameplayStatics::GetPlayerController(Flight, 0)->SetMouseLocation(int(viewSize.X/2), int(viewSize.Y/2));
 	UE_LOG(LogTemp, Warning, TEXT("Mouse Location: %f, %f"), viewSize.X / 2, viewSize.Y / 2);
 	
@@ -50,25 +50,25 @@ void AFlight::Tick(float DeltaTime)
 
 	Super::Tick(DeltaTime);
 	UGameplayStatics::GetPlayerController(Flight, 0)->GetMousePosition(mouseX, mouseY);
-	UE_LOG(LogTemp, Warning, TEXT("Mouse Location: %f, %f"), mouseX, mouseY);
+	UE_LOG(LogTemp, Warning, TEXT("Mouse Location: %f, %f"), yaw, pitch);
 
-	mouseX = (viewSize.X / 2) - mouseX;
-	mouseY = (viewSize.Y / 2) - mouseY;
+	yaw = yawSpeed*((viewSize.X / 2) - mouseX);
+	pitch = pitchSpeed*((viewSize.Y / 2) - mouseY);
 
-	if (mouseX > 1) {
-		mouseX = 1;
+	if (pitch > 1) {
+		pitch = 1;
 	}
-	if (mouseX < -1) {
-		mouseX = -1;
+	if (pitch < -1) {
+		pitch = -1;
 	}
-	if (mouseY > 1) {
-		mouseY = 1;
+	if (yaw > 1) {
+		yaw = 1;
 	}
-	if (mouseY < -1) {
-		mouseY = -1;
+	if (yaw < -1) {
+		yaw = -1;
 	}
-	AFlight::Yaw(mouseY*yawSpeed);
-	AFlight::Pitch(mouseX*pitchSpeed);
+	AFlight::Yaw(yaw);
+	AFlight::Pitch(pitch);
 }
 
 
@@ -79,14 +79,14 @@ void AFlight::Roll(float value)
 }
 
 
-void AFlight::Yaw(float value)
+void AFlight::Pitch(float value)
 {
 	FVector torque = FVector(0.f, value * 999999, 0.f);
 	Flight->AddTorqueInRadians(GetActorQuat().RotateVector(torque));
 
 }
 
-void AFlight::Pitch(float value)
+void AFlight::Yaw(float value)
 {
 	FVector torque = FVector(0.f, 0.f, value * 999999);
 	Flight->AddTorqueInRadians(GetActorQuat().RotateVector(torque));
