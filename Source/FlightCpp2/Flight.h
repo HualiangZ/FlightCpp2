@@ -27,6 +27,7 @@ public:
 	float mouseY;
 	float yawSpeed;
 	float pitchSpeed;
+	float engineSpeed;
 	float yaw;
 	float pitch;
 	FVector2D viewSize;
@@ -40,8 +41,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
-
+	void EngineSpeedUp(float value);
+	void EngineSpeedDown(float value);
 	void Roll(float value);
 	void Yaw(float value);
 	void Pitch(float value);

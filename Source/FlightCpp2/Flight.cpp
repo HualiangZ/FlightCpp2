@@ -36,11 +36,8 @@ void AFlight::BeginPlay()
 
 	viewSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
 	viewportSizeCenter = FVector2D(viewSize.X / 2, viewSize.Y / 2);
-	pitchSpeed = 0.01;
-	yawSpeed = 0.01;
-	UGameplayStatics::GetPlayerController(Flight, 0)->SetMouseLocation(int(viewSize.X/2), int(viewSize.Y/2));
-	UE_LOG(LogTemp, Warning, TEXT("Mouse Location: %f, %f"), viewSize.X / 2, viewSize.Y / 2);
-	
+	pitchSpeed = 0.001;
+	yawSpeed = 0.001;
 	
 }
 
@@ -50,8 +47,8 @@ void AFlight::Tick(float DeltaTime)
 
 	Super::Tick(DeltaTime);
 	UGameplayStatics::GetPlayerController(Flight, 0)->GetMousePosition(mouseX, mouseY);
-	UE_LOG(LogTemp, Warning, TEXT("Mouse Location: %f, %f"), yaw, pitch);
-
+	UE_LOG(LogTemp, Warning, TEXT("%f"), engineSpeed);
+	
 	yaw = yawSpeed*((viewSize.X / 2) - mouseX);
 	pitch = pitchSpeed*((viewSize.Y / 2) - mouseY);
 
@@ -71,6 +68,22 @@ void AFlight::Tick(float DeltaTime)
 	AFlight::Pitch(pitch);
 }
 
+void AFlight::EngineSpeedUp(float value)
+{
+	if(engineSpeed < 9000){
+		engineSpeed += value;
+	}
+	FVector force = FVector(engineSpeed, 0.f, 0.f);
+	Flight->AddForce(GetActorQuat().RotateVector(force));
+
+}
+void AFlight::EngineSpeedDown(float value) {
+	if (engineSpeed > 0) {
+		engineSpeed -= value;
+	}
+	FVector force = FVector(engineSpeed, 0.f, 0.f);
+	Flight->AddForce(GetActorQuat().RotateVector(force));
+}
 
 void AFlight::Roll(float value)
 {
@@ -100,8 +113,9 @@ void AFlight::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAxis("Roll", this, &AFlight::Roll);
-	//PlayerInputComponent->BindAxis("Pitch", this, &AFlight::Pitch);
-	//PlayerInputComponent->BindAxis("Yaw", this, &AFlight::Yaw);
+	PlayerInputComponent->BindAxis("SpeedIntervalUp", this, &AFlight::EngineSpeedUp);
+	PlayerInputComponent->BindAxis("SpeedIntervalDown", this, &AFlight::EngineSpeedDown);
+	//PlayerInputComponent->BindAxis("Yaw", this, &AFlight::Yaw;
 }
 
 
