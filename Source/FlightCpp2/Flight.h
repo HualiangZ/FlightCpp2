@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Engine/World.h"
 #include "Flight.generated.h"
 
 UCLASS()
@@ -46,7 +47,7 @@ public:
 	void Roll(float value);
 	void Yaw(float value);
 	void Pitch(float value);
-
+	void RayCast();
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 

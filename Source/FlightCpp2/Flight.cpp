@@ -47,10 +47,12 @@ void AFlight::Tick(float DeltaTime)
 
 	Super::Tick(DeltaTime);
 	UGameplayStatics::GetPlayerController(Flight, 0)->GetMousePosition(mouseX, mouseY);
-	UE_LOG(LogTemp, Warning, TEXT("%f"), engineSpeed);
-	
+	//UE_LOG(LogTemp, Warning, TEXT(), engineSpeed);
+
 	yaw = yawSpeed*((viewSize.X / 2) - mouseX);
 	pitch = pitchSpeed*((viewSize.Y / 2) - mouseY);
+
+	
 
 	if (pitch > 1) {
 		pitch = 1;
@@ -66,6 +68,23 @@ void AFlight::Tick(float DeltaTime)
 	}
 	AFlight::Yaw(yaw);
 	AFlight::Pitch(pitch);
+	AFlight::RayCast();
+}
+
+void AFlight::RayCast() {
+	FVector start = GetActorLocation();
+	FVector end = start + (GetActorUpVector() * -100);
+	FHitResult hit;
+	if (GetWorld()) {
+		bool hitBool = GetWorld()->LineTraceSingleByChannel(hit, start, end, ECC_Pawn);
+		DrawDebugLine(GetWorld(), start, end, FColor::Red, false,2.f, 0.f, 10.f);
+		if (hitBool) {
+			UE_LOG(LogTemp, Warning, TEXT("true"));
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("false"));
+		}
+	}
 }
 
 void AFlight::EngineSpeedUp(float value)
