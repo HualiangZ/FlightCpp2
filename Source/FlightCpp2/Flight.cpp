@@ -70,7 +70,7 @@ void AFlight::Tick(float DeltaTime)
 
 void AFlight::EngineSpeedUp(float value)
 {
-	if(engineSpeed < 9000){
+	if(engineSpeed < 90000){
 		engineSpeed += value;
 	}
 	FVector force = FVector(engineSpeed, 0.f, 0.f);
@@ -94,14 +94,14 @@ void AFlight::Roll(float value)
 
 void AFlight::Pitch(float value)
 {
-	FVector torque = FVector(0.f, value * 999999, 0.f);
+	FVector torque = FVector(0.f, value * 90000, 0.f);
 	Flight->AddTorqueInRadians(GetActorQuat().RotateVector(torque));
 
 }
 
 void AFlight::Yaw(float value)
 {
-	FVector torque = FVector(0.f, 0.f, value * 999999);
+	FVector torque = FVector(0.f, 0.f, value * 90000);
 	Flight->AddTorqueInRadians(GetActorQuat().RotateVector(torque));
 
 }
