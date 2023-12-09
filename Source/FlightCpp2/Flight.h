@@ -46,8 +46,9 @@ public:
 	void EngineSpeedDown(float value);
 	void Roll(float value);
 	void Yaw(float value);
+	void Lift(bool value);
 	void Pitch(float value);
-	void RayCast();
+	bool RayCast();
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 

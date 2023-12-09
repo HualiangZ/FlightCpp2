@@ -68,28 +68,30 @@ void AFlight::Tick(float DeltaTime)
 	}
 	AFlight::Yaw(yaw);
 	AFlight::Pitch(pitch);
-	AFlight::RayCast();
+	AFlight::Lift(AFlight::RayCast());
 }
 
-void AFlight::RayCast() {
+bool AFlight::RayCast() {
 	FVector start = GetActorLocation();
 	FVector end = start + (GetActorUpVector() * -100);
 	FHitResult hit;
 	if (GetWorld()) {
 		bool hitBool = GetWorld()->LineTraceSingleByChannel(hit, start, end, ECC_Pawn);
-		DrawDebugLine(GetWorld(), start, end, FColor::Red, false,2.f, 0.f, 10.f);
+		//DrawDebugLine(GetWorld(), start, end, FColor::Red, false,2.f, 0.f, 10.f);
 		if (hitBool) {
-			UE_LOG(LogTemp, Warning, TEXT("true"));
+			return true;
 		}
 		else {
-			UE_LOG(LogTemp, Warning, TEXT("false"));
+			return false;
 		}
 	}
+	return false;
 }
 
 void AFlight::EngineSpeedUp(float value)
 {
 	if(engineSpeed < 90000){
+		UE_LOG(LogTemp, Warning, TEXT("%f"), engineSpeed);
 		engineSpeed += value;
 	}
 	FVector force = FVector(engineSpeed, 0.f, 0.f);
@@ -123,6 +125,20 @@ void AFlight::Yaw(float value)
 	FVector torque = FVector(0.f, 0.f, value * 90000);
 	Flight->AddTorqueInRadians(GetActorQuat().RotateVector(torque));
 
+}
+
+void AFlight::Lift(bool value) {
+	float mass = Flight->GetMass();
+	if (engineSpeed > 50000 && value) {
+		FVector force = FVector(0.f, 0.f, mass * 980 + 10000);
+		Flight->AddForce(force);
+	}
+	if (engineSpeed > 50000) {
+		FVector force = FVector(0.f, 0.f, mass * 980);
+		Flight->AddForce(force);
+	}
+
+	
 }
 
 // Called to bind functionality to input
