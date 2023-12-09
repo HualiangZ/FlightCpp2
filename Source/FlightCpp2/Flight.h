@@ -29,8 +29,14 @@ public:
 	float yawSpeed;
 	float pitchSpeed;
 	float engineSpeed;
+	float isBoost;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float yaw;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float pitch;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FString warningTxt;
+
 	FVector2D viewSize;
 	FVector2D viewportSizeCenter;
 
@@ -47,6 +53,8 @@ public:
 	void Roll(float value);
 	void Yaw(float value);
 	void Lift(bool value);
+	void Boosta(float value);
+	void GWarning();
 	void Pitch(float value);
 	bool RayCast();
 	// Called to bind functionality to input

@@ -36,8 +36,8 @@ void AFlight::BeginPlay()
 
 	viewSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
 	viewportSizeCenter = FVector2D(viewSize.X / 2, viewSize.Y / 2);
-	pitchSpeed = 0.001;
-	yawSpeed = 0.001;
+	pitchSpeed = 0.01;
+	yawSpeed = 0.01;
 	
 }
 
@@ -47,28 +47,39 @@ void AFlight::Tick(float DeltaTime)
 
 	Super::Tick(DeltaTime);
 	UGameplayStatics::GetPlayerController(Flight, 0)->GetMousePosition(mouseX, mouseY);
-	//UE_LOG(LogTemp, Warning, TEXT(), engineSpeed);
+	UE_LOG(LogTemp, Warning, TEXT("%f"), engineSpeed);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), isBoost? TEXT("true") : TEXT("false"));
 
 	yaw = yawSpeed*((viewSize.X / 2) - mouseX);
 	pitch = pitchSpeed*((viewSize.Y / 2) - mouseY);
-
+	
 	
 
-	if (pitch > 1) {
-		pitch = 1;
+	if (pitch > 2) {
+		pitch = 2;
 	}
-	if (pitch < -1) {
-		pitch = -1;
+	if (pitch < -2) {
+		pitch = -2;
 	}
-	if (yaw > 1) {
-		yaw = 1;
+	if (yaw > 2) {
+		yaw = 2;
 	}
-	if (yaw < -1) {
-		yaw = -1;
+	if (yaw < -2) {
+		yaw = -2;
 	}
+
+
+
+
 	AFlight::Yaw(yaw);
 	AFlight::Pitch(pitch);
 	AFlight::Lift(AFlight::RayCast());
+	AFlight::GWarning();
+	if (!isBoost) {
+		if (engineSpeed > 90000) {
+			engineSpeed -= 500;
+		}
+	}
 }
 
 bool AFlight::RayCast() {
@@ -88,10 +99,36 @@ bool AFlight::RayCast() {
 	return false;
 }
 
+
+void AFlight::GWarning() {
+	if (yaw == 2 || pitch == 2 || yaw == -2 || pitch == -2) {
+		warningTxt = "Warning High G";
+	}
+	else {
+		warningTxt = "";
+	}
+}
+
+void AFlight::Boosta(float value) {
+	if (engineSpeed < 100000) {
+		engineSpeed += value;
+	}
+
+	if (value > 0) {
+		isBoost = true;
+	}
+	else {
+		isBoost = false;
+	}
+	
+	FVector force = FVector(engineSpeed, 0.f, 0.f);
+	Flight->AddForce(GetActorQuat().RotateVector(force));
+}
+
 void AFlight::EngineSpeedUp(float value)
 {
 	if(engineSpeed < 90000){
-		UE_LOG(LogTemp, Warning, TEXT("%f"), engineSpeed);
+		//UE_LOG(LogTemp, Warning, TEXT("%f"), engineSpeed);
 		engineSpeed += value;
 	}
 	FVector force = FVector(engineSpeed, 0.f, 0.f);
@@ -123,7 +160,7 @@ void AFlight::Pitch(float value)
 void AFlight::Yaw(float value)
 {
 	FVector torque = FVector(0.f, 0.f, value * 90000);
-	Flight->AddTorqueInRadians(GetActorQuat().RotateVector(torque));
+	Flight->AddTorqueInRadians(-GetActorQuat().RotateVector(torque));
 
 }
 
@@ -150,6 +187,7 @@ void AFlight::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Roll", this, &AFlight::Roll);
 	PlayerInputComponent->BindAxis("SpeedIntervalUp", this, &AFlight::EngineSpeedUp);
 	PlayerInputComponent->BindAxis("SpeedIntervalDown", this, &AFlight::EngineSpeedDown);
+	PlayerInputComponent->BindAxis("Boost", this, &AFlight::Boosta);
 	//PlayerInputComponent->BindAxis("Yaw", this, &AFlight::Yaw;
 }
 
