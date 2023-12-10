@@ -44,15 +44,14 @@ void AFlight::BeginPlay()
 // Called every frame
 void AFlight::Tick(float DeltaTime)
 {
-
+	
 	Super::Tick(DeltaTime);
 	UGameplayStatics::GetPlayerController(Flight, 0)->GetMousePosition(mouseX, mouseY);
-	UE_LOG(LogTemp, Warning, TEXT("%f"), gCounter);
+	UE_LOG(LogTemp, Warning, TEXT("%f"), roll);
 	UE_LOG(LogTemp, Warning, TEXT("%s"), isSleep ? TEXT("true") : TEXT("false"));
 
 	yaw = yawSpeed*((viewSize.X / 2) - mouseX);
 	pitch = pitchSpeed*((viewSize.Y / 2) - mouseY);
-	
 	if (pitch > 2) {
 		pitch = 2;
 	}
@@ -73,6 +72,7 @@ void AFlight::Tick(float DeltaTime)
 	AFlight::Pitch(pitch);
 	AFlight::Lift(AFlight::RayCast());
 	AFlight::GWarning();
+	AFlight::GetXRotation();
 	if (isSleep) {
 		AFlight::Sleep();
 	}
@@ -81,6 +81,11 @@ void AFlight::Tick(float DeltaTime)
 			engineSpeed -= 500;
 		}
 	}
+}
+
+void AFlight::GetXRotation(){
+	FRotator rotation = GetActorRotation();
+	roll = rotation.Roll;
 }
 
 bool AFlight::RayCast() {
@@ -99,7 +104,6 @@ bool AFlight::RayCast() {
 	}
 	return false;
 }
-
 
 void AFlight::GWarning() {
 	if (yaw == 2 && engineSpeed > 90000|| pitch == 2 && engineSpeed > 90000 || yaw == -2 && engineSpeed > 90000 || pitch == -2 && engineSpeed > 90000) {

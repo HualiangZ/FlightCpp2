@@ -34,6 +34,8 @@ public:
 	float sleepCounter = 10.f;
 	float isBoost;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float roll;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float yaw;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float pitch;
@@ -61,6 +63,8 @@ public:
 	void Sleep();
 	void Pitch(float value);
 	bool RayCast();
+
+	void GetXRotation();
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
