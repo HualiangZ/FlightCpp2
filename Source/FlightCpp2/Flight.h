@@ -29,6 +29,9 @@ public:
 	float yawSpeed;
 	float pitchSpeed;
 	float engineSpeed;
+	float gCounter = 10.f;
+	bool isSleep;
+	float sleepCounter = 10.f;
 	float isBoost;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float yaw;
@@ -55,6 +58,7 @@ public:
 	void Lift(bool value);
 	void Boosta(float value);
 	void GWarning();
+	void Sleep();
 	void Pitch(float value);
 	bool RayCast();
 	// Called to bind functionality to input

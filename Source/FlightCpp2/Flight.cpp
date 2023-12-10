@@ -47,14 +47,12 @@ void AFlight::Tick(float DeltaTime)
 
 	Super::Tick(DeltaTime);
 	UGameplayStatics::GetPlayerController(Flight, 0)->GetMousePosition(mouseX, mouseY);
-	UE_LOG(LogTemp, Warning, TEXT("%f"), engineSpeed);
-	UE_LOG(LogTemp, Warning, TEXT("%s"), isBoost? TEXT("true") : TEXT("false"));
+	UE_LOG(LogTemp, Warning, TEXT("%f"), gCounter);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), isSleep ? TEXT("true") : TEXT("false"));
 
 	yaw = yawSpeed*((viewSize.X / 2) - mouseX);
 	pitch = pitchSpeed*((viewSize.Y / 2) - mouseY);
 	
-	
-
 	if (pitch > 2) {
 		pitch = 2;
 	}
@@ -75,6 +73,9 @@ void AFlight::Tick(float DeltaTime)
 	AFlight::Pitch(pitch);
 	AFlight::Lift(AFlight::RayCast());
 	AFlight::GWarning();
+	if (isSleep) {
+		AFlight::Sleep();
+	}
 	if (!isBoost) {
 		if (engineSpeed > 90000) {
 			engineSpeed -= 500;
@@ -101,11 +102,28 @@ bool AFlight::RayCast() {
 
 
 void AFlight::GWarning() {
-	if (yaw == 2 || pitch == 2 || yaw == -2 || pitch == -2) {
+	if (yaw == 2 && engineSpeed > 90000|| pitch == 2 && engineSpeed > 90000 || yaw == -2 && engineSpeed > 90000 || pitch == -2 && engineSpeed > 90000) {
+		gCounter -= GetWorld()->GetDeltaSeconds();
 		warningTxt = "Warning High G";
+		if (gCounter < 0) {
+			isSleep = true;
+		}
 	}
-	else {
-		warningTxt = "";
+}
+
+void AFlight::Sleep() {
+	if (isSleep) {
+		sleepCounter -= GetWorld()->GetDeltaSeconds();
+		pitch = 0;
+		yaw = 0;
+		engineSpeed -= 100;
+		warningTxt = "sleeping: %i", sleepCounter;
+		if (sleepCounter < 0) {
+			isSleep = false;
+			sleepCounter = 10.f;
+			gCounter = 10.f;
+			warningTxt = "";
+		}
 	}
 }
 
