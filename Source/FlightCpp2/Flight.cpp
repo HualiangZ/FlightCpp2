@@ -73,6 +73,8 @@ void AFlight::Tick(float DeltaTime)
 	AFlight::Lift(AFlight::RayCast());
 	AFlight::GWarning();
 	AFlight::GetXRotation();
+	AFlight::GetYRotation();
+	AFlight::GetZRotation();
 	if (isSleep) {
 		AFlight::Sleep();
 	}
@@ -86,6 +88,22 @@ void AFlight::Tick(float DeltaTime)
 void AFlight::GetXRotation(){
 	FRotator rotation = GetActorRotation();
 	roll = rotation.Roll;
+}
+
+void AFlight::GetYRotation() {
+	FRotator rotation = GetActorRotation();
+	if (rotation.Yaw > 0) {
+		yawRotation = rotation.Yaw/360;
+	}
+	else {
+		yawRotation = (rotation.Yaw /-360) + 0.5;
+	}
+
+}
+
+void AFlight::GetZRotation() {
+	FRotator rotation = GetActorRotation();
+	pitchRotation = rotation.Pitch*pitchSpeed;
 }
 
 bool AFlight::RayCast() {
