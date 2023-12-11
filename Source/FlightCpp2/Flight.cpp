@@ -33,7 +33,7 @@ AFlight::AFlight()
 void AFlight::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	viewSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
 	viewportSizeCenter = FVector2D(viewSize.X / 2, viewSize.Y / 2);
 	pitchSpeed = 0.01;
@@ -52,6 +52,9 @@ void AFlight::Tick(float DeltaTime)
 
 	yaw = yawSpeed*((viewSize.X / 2) - mouseX);
 	pitch = pitchSpeed*((viewSize.Y / 2) - mouseY);
+	getLocation = GetActorLocation();
+	heightTxt = getLocation.Z;
+	
 	if (pitch > 2) {
 		pitch = 2;
 	}

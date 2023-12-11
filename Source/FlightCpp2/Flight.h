@@ -45,7 +45,10 @@ public:
 	float pitch;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FString warningTxt;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float heightTxt;
 
+	FVector getLocation;
 	FVector2D viewSize;
 	FVector2D viewportSizeCenter;
 
