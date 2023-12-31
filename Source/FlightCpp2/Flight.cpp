@@ -12,6 +12,7 @@
 AFlight::AFlight()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	//################
 	PrimaryActorTick.bCanEverTick = true;
 	Flight = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Flight"));
 	SetRootComponent(Flight);
@@ -26,7 +27,7 @@ AFlight::AFlight()
 	CameraComponent->SetupAttachment(SpringArmComponent);
 	CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 5.0f));
 	CameraComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
-
+	//############### Copied for the lab sheet
 }
 
 // Called when the game starts or when spawned
