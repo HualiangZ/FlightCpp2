@@ -27,7 +27,7 @@ AFlight::AFlight()
 	CameraComponent->SetupAttachment(SpringArmComponent);
 	CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 5.0f));
 	CameraComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
-	//############### Copied for the lab sheet
+	//############### Copied for the lab sheet C++ and Design Patterns Lab B
 }
 
 // Called when the game starts or when spawned
